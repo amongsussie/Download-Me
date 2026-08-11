@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal - Your Classes</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://images.seeklogo.com/logo-png/47/2/google-classroom-logo-png_seeklogo-479750.png">
+  <link rel="apple-touch-icon" href="https://images.seeklogo.com/logo-png/47/2/google-classroom-logo-png_seeklogo-479750.png">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: #0d5c4d url('background.png') center center / cover no-repeat fixed;
+      color: #202124;
+      min-height: 100vh;
+    }
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid #e0e0e0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 22px;
+      font-weight: 500;
+      color: #5f6368;
+    }
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: #1a73e8;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    /* ===== NOTIFICATION BELL ===== */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+    }
+    .notif-bell {
+      position: relative;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .notif-bell:hover {
+      background: #f1f3f4;
+    }
+    .notif-bell svg {
+      width: 24px;
+      height: 24px;
+      fill: #5f6368;
+    }
+    .notif-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: #ea4335;
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Dropdown */
+    .notif-dropdown {
+      position: absolute;
+      top: 52px;
+      right: 0;
+      width: 340px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      border: 1px solid #e0e0e0;
+      display: none;
+      overflow: hidden;
+      z-index: 200;
+    }
+    .notif-dropdown.show {
+      display: block;
+    }
+    .notif-header {
+      padding: 14px 16px;
+      font-weight: 500;
+      font-size: 15px;
+      border-bottom: 1px solid #e8eaed;
+      color: #202124;
+    }
+    .notif-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f1f3f4;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .notif-item:hover {
+      background: #f8f9fa;
+    }
+    .notif-item:last-child {
+      border-bottom: none;
+    }
+    .notif-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: #202124;
+    }
+    .notif-body {
+      font-size: 13px;
+      color: #5f6368;
+      line-height: 1.4;
+    }
+    .notif-body a {
+      color: #1a73e8;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .notif-body a:hover {
+      text-decoration: underline;
+    }
+    .notif-time {
+      font-size: 12px;
+      color: #80868b;
+      margin-top: 6px;
+    }
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+    .section-title {
+      font-size: 24px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      color: white;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+    .classes {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .class-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      transition: box-shadow 0.2s, transform 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      height: 220px;
+    }
+    .class-card:hover {
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      transform: translateY(-4px);
+    }
+    .card-header {
+      height: 90px;
+      padding: 16px;
+      color: white;
+    }
+    .card-header h2 {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .card-header p {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    .card-body {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card-footer {
+      font-size: 13px;
+      color: #5f6368;
+    }
+    .craft { background: linear-gradient(135deg, #1a73e8, #174ea6); }
+    .blox { background: linear-gradient(135deg, #34a853, #137333); }
+    .tube { background: linear-gradient(135deg, #ea4335, #c5221f); }
+    .race { background: linear-gradient(135deg, #fbbc04, #e37400); }
+    .bloxd { background: linear-gradient(135deg, #9c27b0, #6a1b9a); }
+    .shockers { background: linear-gradient(135deg, #00bcd4, #0097a7); }
+    .surfers { background: linear-gradient(135deg, #e91e63, #c2185b); }
+    .hunters { background: linear-gradient(135deg, #ff5722, #e64a19); }
+    .files { background: linear-gradient(135deg, #607d8b, #455a64); }
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: rgba(255,255,255,0.85);
+      font-size: 13px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <div class="logo-icon">C</div>
+      <span>Classroom</span>
+    </div>
+    <div class="header-right">
+      <div class="notif-bell" id="notifBell">
+        <!-- Bell icon -->
+        <svg viewBox="0 0 24 24">
+          <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+        </svg>
+        <span class="notif-badge">2</span>
+      </div>
+      <!-- Dropdown -->
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-header">Notifications</div>
+       
+        <!-- Notification 1 -->
+        <div class="notif-item">
+          <div class="notif-title">New Teacher Recommendation</div>
+          <div class="notif-body">
+            Check out this week's special picks →
+            <a href="https://amongsussie.github.io/Teachers-Picks/" target="_blank">Teachers Picks</a>
+          </div>
+          <div class="notif-time">Just now</div>
+        </div>
+        <!-- Notification 2 -->
+        <div class="notif-item">
+          <div class="notif-title">System Update</div>
+          <div class="notif-body">
+            New classes have been added to your portal. Check the dashboard for the latest activities.
+          </div>
+          <div class="notif-time">2 hours ago</div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <h1 class="section-title">Your classes</h1>
+    <div class="classes">
+      <a href="https://amongsussie.github.io/SchoolCraft/" class="class-card">
+        <div class="card-header craft">
+          <h2>SchoolCraft</h2>
+          <p>Building & Creative</p>
+        </div>
+        <div class="card-body">
+          <p>Open the class</p>
+          <div class="card-footer">Last activity • Today</div>
+        </div>
+      </a>
+      <a href="https://amongsussie.github.io/SchoolBlox/" class="class-card">
+        <div class="card-header blox">
+          <h2>SchoolBlox</h2>
+          <p>Block-based Activities</p>
+        </div>
+        <div class="card-body">
+          <p>Open the class</p>
+          <div class="card-footer">Last activity • Today</div>
+        </div>
+      </a>
+      <a href="https://amongsussie.github.io/SchoolTube/" class="class-card">
+        <div class="card-header tube">
+          <h2>SchoolTube</h2>
+          <p>Video Resources</p>
+        </div>
+        <div class="card-body">
+          <p>Open the class</p>
+          <div class="card-footer">Last activity • Today</div>
+        </div>
+      </a>
+      <a href="https://amongsussie.github.io/SchoolRace/" class="class-card">
+        <div class="card-header race">
+          <h2>SchoolRace</h2>
+          <p>Speed Challenges</p>
+        </div>
+        <div class="card-body">
+          <p>Open the class</p>
+          <div class="card-footer">Last activity • Today</div>
+        </div>
+      </a>
+      <a href="https://amongsussie.github.io/School-Bloxd/" class="class-card">
+        <div class="card-header bloxd">
+          <h2>School-Bloxd</h2>
+          <p>Parkour & Multiplayer</p>
+        </div>
+        <div class="card-body">
+          <p>Open the class</p>
+          <div class="card-footer">Last activity • Today</div>
+        </div>
+      </a>
+      <a href="https://amongsussie.github.io/SchoolShockers/" class="class-card">
+        <div class="card-header shockers">
+          <h2>SchoolShockers</h2>
+          <p>Egg Shooter Action</p>
+        </div>
+        <div class="card-body">
+          <p>Open the class</p>
+          <div class="card-footer">Last activity • Today</div>
+        </div>
+      </a>
+      <a href="https://amongsussie.github.io/SchoolSurfers/" class="class-card">
+        <div class="card-header surfers">
+          <h2>SchoolSurfers</h2>
+          <p>Endless Runner</p>
+        </div>
+        <div class="card-body">
+          <p>Open the class</p>
+          <div class="card-footer">Last activity • Today</div>
+        </div>
+      </a>
+      <a href="https://amongsussie.github.io/SchoolHunters/" class="class-card">
+        <div class="card-header hunters">
+          <h2>SchoolHunters</h2>
+          <p>Hunter Challenges</p>
+        </div>
+        <div class="card-body">
+          <p>Open the class</p>
+          <div class="card-footer">Last activity • Today</div>
+        </div>
+      </a>
+      <a href="https://amongsussie.github.io/SchoolFiles/" class="class-card">
+        <div class="card-header files">
+          <h2>SchoolFiles</h2>
+          <p>File Resources</p>
+        </div>
+        <div class="card-body">
+          <p>Open the class</p>
+          <div class="card-footer">Last activity • Today</div>
+        </div>
+      </a>
+    </div>
+  </main>
+  <footer>
+    Classroom • For Educational Use
+  </footer>
+  <script>
+    const bell = document.getElementById('notifBell');
+    const dropdown = document.getElementById('notifDropdown');
+    bell.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle('show');
+    });
+    // Close when clicking outside
+    document.addEventListener('click', () => {
+      dropdown.classList.remove('show');
+    });
+    // Prevent closing when clicking inside the dropdown
+    dropdown.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  </script>
+</body>
+</html>
